@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Staff</title>
+ <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script> -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script>
+
+
+  </script>
+
+  <script>
+    angular.module('myApp', [])
+
+    .directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+    }])
+
+    .controller("fileUploadCtrl", function($http,$scope){
+      $scope.uploadFile = function(){
+        var file = $scope.myFile;
+        console.log(file);
+        var uploadUrl = "http://18.220.125.152:8080/api/1/staff/upload/";
+        var fd = new FormData();
+        fd.append("file",file);        
+        $http.post(uploadUrl,fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .then(function(data){
+          console.log(data);
+        })      
+      };
+
+      $scope.uploadVehicleReg = function(){
+        var file = $scope.vehicleFile;
+        console.log(file);
+        var uploadUrl = "http://18.220.125.152:8080/api/1/claim/vehicleRegistration/";
+        var fd = new FormData();
+        fd.append("file",file);        
+        $http.post(uploadUrl,fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .then(function(data){
+          console.log(data);
+        })      
+      };
+    })
+
+  </script>
+
+</head>
+<body ng-app="myApp" ng-controller="fileUploadCtrl">
+<h3>Upload Staffs File</h3>
+<input type="file" file-model="myFile"/><br><br>
+<button ng-click="uploadFile()">Upload</button>  
+  <span id = "status"></span>
+
+  <br>
+
+<h3>Upload Vehicle Registration File</h3>
+<input type="file" file-model="vehicleFile"/><br><br>
+<button ng-click="uploadVehicleReg()">Upload</button>  
+  <span id = "status"></span>
+
+</body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+
+</html>
